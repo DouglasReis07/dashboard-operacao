@@ -1,10 +1,10 @@
-[
-    {
-        "data": "2026-04-01",
-        "total_analisado": 54867,
-        "mais_7_dias": 30090,
-        "mais_15_dias": 30016,
-        "mais_30_dias": 29923,
-        "mais_90_dias": 29724
-    }
-]
+{
+    "data": "2026-04-01",
+    "total_analisado": 54867,
+    "comunicou_hoje": 50000, 
+    "nao_comunicou_hoje": 4867,
+    "mais_7_dias": 856,
+    "mais_15_dias": 706,
+    "mais_30_dias": 484,
+    "mais_90_dias": 67
+  }
