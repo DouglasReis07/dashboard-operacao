@@ -11,13 +11,13 @@
     },
     {
         "data": "2026-04-07",
-        "ultima_atualizacao": "07/04/2026 \u00e0s 11:37",
-        "total_analisado": 54577,
-        "comunicou_hoje": 39067,
-        "nao_comunicou_hoje": 15510,
-        "mais_7_dias": 15139,
-        "mais_15_dias": 15027,
-        "mais_30_dias": 14887,
-        "mais_90_dias": 14540
+        "ultima_atualizacao": "07/04/2026 \u00e0s 12:39",
+        "total_analisado": 54588,
+        "comunicou_hoje": 53224,
+        "nao_comunicou_hoje": 1364,
+        "mais_7_dias": 847,
+        "mais_15_dias": 691,
+        "mais_30_dias": 504,
+        "mais_90_dias": 23
     }
 ]
