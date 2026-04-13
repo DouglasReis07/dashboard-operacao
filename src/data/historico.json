@@ -1,34 +1,7 @@
 [
     {
-        "data": "2026-04-01",
-        "total_analisado": 54867,
-        "comunicou_hoje": 50000,
-        "nao_comunicou_hoje": 4867,
-        "mais_7_dias": 856,
-        "mais_15_dias": 706,
-        "mais_30_dias": 484,
-        "mais_90_dias": 67
-    },
-    {
-        "data": "2026-04-07",
-        "ultima_atualizacao": "07/04/2026 \u00e0s 12:39",
-        "total_analisado": 54588,
-        "comunicou_hoje": 53224,
-        "nao_comunicou_hoje": 1364,
-        "mais_7_dias": 847,
-        "mais_15_dias": 691,
-        "mais_30_dias": 504,
-        "mais_90_dias": 23
-    },
-    {
-        "data": "2026-04-08",
-        "ultima_atualizacao": "08/04/2026 \u00e0s 11:52",
-        "total_analisado": 54588,
-        "comunicou_hoje": 53194,
-        "nao_comunicou_hoje": 1394,
-        "mais_7_dias": 858,
-        "mais_15_dias": 707,
-        "mais_30_dias": 512,
-        "mais_90_dias": 28
+        "data": "2026-04-13",
+        "ultima_atualizacao": "13/04/2026 12:15",
+        "total": 3
     }
 ]
