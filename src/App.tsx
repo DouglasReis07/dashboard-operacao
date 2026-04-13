@@ -9,22 +9,30 @@ import dispositivosDados from './data/dispositivos.json';
 import './App.css';
 
 const App: React.FC = () => {
+  // 1. BLINDAGEM DO HISTÓRICO
   const dadosBrutos: any = historicoDados;
   const hoje: any = (dadosBrutos && dadosBrutos.length > 0) ? dadosBrutos[dadosBrutos.length - 1] : {
     "ultima_atualizacao": "Nenhuma", "total_analisado": 0, "comunicou_hoje": 0, "nao_comunicou_hoje": 0, 
     "mais_7_dias": 0, "mais_15_dias": 0, "mais_30_dias": 0, "mais_90_dias": 0
   };
 
+  // 2. BLINDAGEM DA TABELA DE DISPOSITIVOS (A CORREÇÃO AQUI)
+  // Força o TypeScript a entender que é uma lista, se não for, cria uma lista vazia []
+  const listaDispositivos: any[] = Array.isArray(dispositivosDados) ? dispositivosDados : [];
+
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeFilter, setActiveFilter] = useState('all'); // 🟢 NOVO: Guarda qual card foi clicado
+  const [activeFilter, setActiveFilter] = useState('all');
   const itemsPerPage = 15;
 
-  // 🟢 NOVO: Filtra pela busca de texto E TAMBÉM pelo card clicado
-  const filteredData = dispositivosDados.filter((item: any) => {
-    // Regra da busca
-    const imeiMatch = String(item.imei).toLowerCase().includes(searchTerm.toLowerCase());
-    const contratoMatch = String(item.contrato_natural).toLowerCase().includes(searchTerm.toLowerCase());
+  // 3. FILTRO BLINDADO
+  const filteredData = listaDispositivos.filter((item: any) => {
+    // Garante que é string para não dar erro no .includes()
+    const imeiStr = String(item.imei || '').toLowerCase();
+    const contratoStr = String(item.contrato_natural || '').toLowerCase();
+    
+    const imeiMatch = imeiStr.includes(searchTerm.toLowerCase());
+    const contratoMatch = contratoStr.includes(searchTerm.toLowerCase());
     const matchesSearch = imeiMatch || contratoMatch;
 
     // Regra do filtro dos cards
@@ -41,7 +49,8 @@ const App: React.FC = () => {
     return matchesSearch && matchesCard;
   });
 
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  // Lógica de Paginação (com prevenção de divisão por zero)
+  const totalPages = Math.max(1, Math.ceil(filteredData.length / itemsPerPage));
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = filteredData.slice(startIndex, startIndex + itemsPerPage);
 
@@ -59,13 +68,15 @@ const App: React.FC = () => {
     const headers = ['IMEI', 'Chave Natural', 'Ultima Comunicacao'];
     const csvRows = [headers.join(',')];
     filteredData.forEach((item: any) => {
-      csvRows.push(`"${item.imei}","${item.contrato_natural}","${item.ultima_localizacao}"`);
+      const imei = item.imei || 'N/A';
+      const contrato = item.contrato_natural || 'N/A';
+      const data = item.ultima_localizacao || 'Sem Dados';
+      csvRows.push(`"${imei}","${contrato}","${data}"`);
     });
     const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    // Exporta com o nome do filtro para ficar organizado!
-    link.setAttribute('download', `zeus_${activeFilter}_${hoje.data}.csv`);
+    link.setAttribute('download', `zeus_${activeFilter}_extracao.csv`);
     link.click();
   };
 
@@ -117,7 +128,6 @@ const App: React.FC = () => {
         <div className="table-section">
           <div className="table-header">
             <h2>
-              {/* Título dinâmico que muda com o filtro */}
               {activeFilter === 'all' && "Investigação Geral"}
               {activeFilter === 'success' && "Comunicaram Hoje"}
               {activeFilter === 'offline-today' && "Não Comunicaram Hoje"}
@@ -138,17 +148,22 @@ const App: React.FC = () => {
             <table>
               <thead><tr><th>IMEI</th><th>Chave Natural</th><th>Última Comunicação</th></tr></thead>
               <tbody>
-                {currentItems.length > 0 ? currentItems.map((item: any, i) => (
-                  <tr key={i}>
-                    <td className="font-mono">{item.imei}</td>
-                    <td>{item.contrato_natural}</td>
-                    <td>
-                      <span className={`status-badge ${item.ultima_localizacao.includes('API') || item.ultima_localizacao.includes('Sem Dados') ? 'offline' : 'online'}`}>
-                        {item.ultima_localizacao}
-                      </span>
-                    </td>
-                  </tr>
-                )) : (
+                {currentItems.length > 0 ? currentItems.map((item: any, i) => {
+                  const dataLocalizacao = String(item.ultima_localizacao || 'Sem Dados');
+                  const isOffline = dataLocalizacao.includes('API') || dataLocalizacao.includes('Sem Dados');
+                  
+                  return (
+                    <tr key={i}>
+                      <td className="font-mono">{item.imei || 'N/A'}</td>
+                      <td>{item.contrato_natural || 'N/A'}</td>
+                      <td>
+                        <span className={`status-badge ${isOffline ? 'offline' : 'online'}`}>
+                          {dataLocalizacao}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                }) : (
                   <tr><td colSpan={3} className="empty-state">Nenhum dispositivo encontrado neste filtro.</td></tr>
                 )}
               </tbody>
